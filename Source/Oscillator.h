@@ -24,6 +24,7 @@ public:
     
     void reset()
     {
+        dc = 0.0f;
         inc = 0.0f;
         phase = 0.0f;
         sin0 = 0.0f;
@@ -42,6 +43,7 @@ public:
             float halfPeriod = period / 2.0f; // midpoint between current peak and the next one
             
             phaseMax = std::floor(0.5f + halfPeriod) - 0.5f;
+            dc = 0.5f * amplitude / phaseMax; // calcuate the dc offset
             phaseMax *= PI;
             
             inc = phaseMax / halfPeriod;
@@ -68,13 +70,14 @@ public:
             output = sinp / phase;
         }
         
-        return output;
+        return output - dc; // remove the dc from the signal
     }
     
 private:
+    float dc;
+    float inc;
     float phase; // measured as: sample * PI
     float phaseMax; // measured as: sample * PI
-    float inc;
     float sin0;
     float sin1;
     float dsin;
