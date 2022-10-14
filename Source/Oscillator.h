@@ -26,6 +26,9 @@ public:
     {
         inc = 0.0f;
         phase = 0.0f;
+        sin0 = 0.0f;
+        sin1 = 0.0f;
+        dsin = 0.0f;
     }
     
     float nextSample()
@@ -44,8 +47,12 @@ public:
             inc = phaseMax / halfPeriod;
             phase = -phase;
             
-            if ((phase * phase) > 1e-9) { // aka: if (phase < -1e-9 || phase > 1e-9)
-                output = (amplitude * std::sin(phase)) / phase;
+            sin0 = amplitude * std::sin(phase);
+            sin1 = amplitude * std::sin(phase - inc);
+            dsin = 2.0f * std::cos(inc);
+            
+            if ((phase * phase) > 1e-9) {
+                output = sin0 / phase;
             } else {
                 output = amplitude;
             }
@@ -55,7 +62,10 @@ public:
                 inc = -inc;
             }
             
-            output = (amplitude * std::sin(phase)) / phase;
+            float sinp = (dsin * sin0) - sin1;
+            sin1 = sin0;
+            sin0 = sinp;
+            output = sinp / phase;
         }
         
         return output;
@@ -65,4 +75,7 @@ private:
     float phase; // measured as: sample * PI
     float phaseMax; // measured as: sample * PI
     float inc;
+    float sin0;
+    float sin1;
+    float dsin;
 };
