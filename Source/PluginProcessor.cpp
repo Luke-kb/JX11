@@ -49,10 +49,13 @@ JX11AudioProcessor::JX11AudioProcessor()
     castParameter(apvts, ParameterID::tuning, tuningParam);
     castParameter(apvts, ParameterID::outputLevel, outputLevelParam);
     castParameter(apvts, ParameterID::polyMode, polyModeParam);
+    
+    apvts.state.addListener(this);
 }
 
 JX11AudioProcessor::~JX11AudioProcessor()
 {
+    apvts.state.removeListener(this);
 }
 
 //==============================================================================

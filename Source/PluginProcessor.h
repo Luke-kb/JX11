@@ -48,7 +48,8 @@ namespace ParameterID
 //==============================================================================
 /**
 */
-class JX11AudioProcessor  : public juce::AudioProcessor
+class JX11AudioProcessor  : public juce::AudioProcessor,
+                            private juce::ValueTree::Listener
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
                             #endif
@@ -100,6 +101,10 @@ private:
     void splitBufferByEvents(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
     void handleMIDI(uint8_t data0, uint8_t data1, uint8_t data2);
     void render(juce::AudioBuffer<float>& buffer, int sampleCount, int bufferOffset);
+    void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override
+    {
+        DBG("parameter changed");
+    }
     Synth synth;
     // parameters
     juce::AudioParameterFloat* oscMixParam;
