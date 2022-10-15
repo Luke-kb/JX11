@@ -225,7 +225,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout JX11AudioProcessor::createPa
         juce::NormalisableRange<float>(0.0f, 100.0f, 1.0f),
         25.0f,
         juce::AudioParameterFloatAttributes().withLabel("%")));
-
+    
+    // amp envelope parameters
     layout.add(std::make_unique<juce::AudioParameterFloat>(
         ParameterID::envAttack,
         "Env Attack",
@@ -254,6 +255,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout JX11AudioProcessor::createPa
         30.0f,
         juce::AudioParameterFloatAttributes().withLabel("%")));
 
+    // amp parameters
     auto lfoRateStringFromValue = [](float value, int)
     {
         float lfoHz = std::exp(7.0f * value - 4.0f);
