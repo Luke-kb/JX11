@@ -366,6 +366,13 @@ bool JX11AudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) con
 void JX11AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
+    
+    // read the parameters
+    const juce::String& paramID = ParameterID::noise.getParamID();
+    float noiseMix = apvts.getRawParameterValue(paramID)->load() / 100.0f;
+    noiseMix *= noiseMix;
+    synth.noiseMix = noiseMix * 0.06f;
+    
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 

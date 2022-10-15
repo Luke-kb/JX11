@@ -78,7 +78,7 @@ void Synth::render(float** outputBuffers, int sampleCount)
     // loop through samplesin buffer one-by-one
     for (int sample = 0; sample < sampleCount; ++sample) {
         // grab output from noise generator
-//        float noise = noiseGen.nextValue();
+        float noise = noiseGen.nextValue() * noiseMix;
         
         // set output to 0
         float output = 0.0f;
@@ -88,7 +88,7 @@ void Synth::render(float** outputBuffers, int sampleCount)
         // it by 127 (the total num of values) and multiplying by 0.5 (eg a 6dB reduction)
         // so that it is not too loud
         if (voice.note > 0) {
-            output = voice.render();
+            output = voice.render() + noise;
         }
         
         // write the output value to the respective output buffers
