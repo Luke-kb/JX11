@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "Synth.h"
+#include "Preset.h"
 
 namespace ParameterID
 {
@@ -98,16 +99,25 @@ public:
 private:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     
-    void splitBufferByEvents(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
-    void handleMIDI(uint8_t data0, uint8_t data1, uint8_t data2);
-    void render(juce::AudioBuffer<float>& buffer, int sampleCount, int bufferOffset);
-    void update();
     void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override
     {
         parametersChanged.store(true);
     }
+    
     std::atomic<bool> parametersChanged { false };
+    
+    void splitBufferByEvents(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
+    void handleMIDI(uint8_t data0, uint8_t data1, uint8_t data2);
+    void render(juce::AudioBuffer<float>& buffer, int sampleCount, int bufferOffset);
+    
+    void update();
+    void createPrograms();
+    
+    std::vector<Preset> presets;
+    int currentProgram;
+
     Synth synth;
+
     // parameters
     juce::AudioParameterFloat* oscMixParam;
     juce::AudioParameterFloat* oscTuneParam;
