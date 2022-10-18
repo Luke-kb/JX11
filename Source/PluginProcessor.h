@@ -101,10 +101,12 @@ private:
     void splitBufferByEvents(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
     void handleMIDI(uint8_t data0, uint8_t data1, uint8_t data2);
     void render(juce::AudioBuffer<float>& buffer, int sampleCount, int bufferOffset);
+    void update();
     void valueTreePropertyChanged(juce::ValueTree&, const juce::Identifier&) override
     {
-        DBG("parameter changed");
+        parametersChanged.store(true);
     }
+    std::atomic<bool> parametersChanged { false };
     Synth synth;
     // parameters
     juce::AudioParameterFloat* oscMixParam;

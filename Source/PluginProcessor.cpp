@@ -352,10 +352,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout JX11AudioProcessor::createPa
 //==============================================================================
 void JX11AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
-    
     synth.allocateResources(sampleRate, samplesPerBlock);
+    parametersChanged.store(true);
     reset();
 }
 
@@ -397,15 +395,9 @@ void JX11AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
 {
     juce::ScopedNoDenormals noDenormals;
     
-    // read the parameters
-    const juce::String& paramID = ParameterID::noise.getParamID();
-    float noiseMix = noiseParam->get() / 100.0f;
-    noiseMix *= noiseMix;
-    synth.noiseMix = noiseMix * 0.06f;
-    
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-
+    
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -414,6 +406,11 @@ void JX11AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i) {
         buffer.clear (i, 0, buffer.getNumSamples());
+    }
+    
+    bool expected = true;
+    if (parametersChanged.compare_exchange_strong(expected, false)) {
+        update();
     }
         
     splitBufferByEvents(buffer, midiMessages);
@@ -479,6 +476,12 @@ void JX11AudioProcessor::render(juce::AudioBuffer<float> &buffer, int sampleCoun
     }
     
     synth.render(outputBuffers, sampleCount);
+}
+
+void JX11AudioProcessor::update() {
+    float noiseMix = noiseParam->get() / 100.0f;
+    noiseMix *= noiseMix;
+    synth.noiseMix = noiseMix * 0.06f;
 }
 
 //==============================================================================
