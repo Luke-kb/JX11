@@ -11,11 +11,13 @@
 #pragma once
 
 #include "Oscillator.h"
+#include "Envelope.h"
 
 struct Voice
 {
     int note;
     float saw;
+    Envelope env;
     Oscillator osc;
     
     void reset()
@@ -25,10 +27,14 @@ struct Voice
         osc.reset();
     }
     
-    float render()
+    float render(float input)
     {
         float sample = osc.nextSample();
         saw = (saw * 0.997f) + sample; // 'leaky integrator'
-        return saw;
+        
+        float output = saw + input;
+        
+        float envelope = env.nextValue();
+        return saw * envelope;
     }
 };

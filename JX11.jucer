@@ -16,6 +16,7 @@
       <FILE id="WnlDCX" name="Synth.h" compile="0" resource="0" file="Source/Synth.h"/>
       <FILE id="V6Zpld" name="Synth.cpp" compile="1" resource="0" file="Source/Synth.cpp"/>
       <FILE id="H5sbsL" name="Voice.h" compile="0" resource="0" file="Source/Voice.h"/>
+      <FILE id="UkYkVV" name="Envelope.h" compile="0" resource="0" file="Source/Envelope.h"/>
       <FILE id="F1Rt0P" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>
       <FILE id="QsUOUc" name="Preset.h" compile="0" resource="0" file="Source/Preset.h"/>
       <FILE id="bNqCG3" name="NoiseGenerator.h" compile="0" resource="0"

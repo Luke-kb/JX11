@@ -61,6 +61,7 @@ void Synth::noteOn(int note, int velocity)
     voice.osc.amplitude = (velocity / 127.0f) * 0.5f;
     voice.osc.period = sampleRate / freq;
     voice.osc.reset();
+    voice.env.level = 1.0f; // sets initial env level when note starts
 }
 
 void Synth::noteOff(int note)
@@ -88,7 +89,7 @@ void Synth::render(float** outputBuffers, int sampleCount)
         // it by 127 (the total num of values) and multiplying by 0.5 (eg a 6dB reduction)
         // so that it is not too loud
         if (voice.note > 0) {
-            output = voice.render() + noise;
+            output = voice.render(noise) + noise;
         }
         
         // write the output value to the respective output buffers
