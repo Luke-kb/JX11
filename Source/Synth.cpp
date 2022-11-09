@@ -62,6 +62,7 @@ void Synth::noteOn(int note, int velocity)
     voice.osc.period = sampleRate / freq;
     voice.osc.reset();
     voice.env.level = 1.0f; // sets initial env level when note starts
+    voice.env.multiplier = envDecay;
 }
 
 void Synth::noteOff(int note)

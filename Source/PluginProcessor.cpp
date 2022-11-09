@@ -585,7 +585,14 @@ void JX11AudioProcessor::render(juce::AudioBuffer<float> &buffer, int sampleCoun
     synth.render(outputBuffers, sampleCount);
 }
 
-void JX11AudioProcessor::update() {
+void JX11AudioProcessor::update()
+{
+    float sampleRate = float(getSampleRate()); // get current sample rate
+    
+    float decayTime = envDecayParam->get() / 100.0f * 5.0f; // get value of decay param and convert to float between 0 and 1
+    float decaySamples = sampleRate * decayTime; // calculate num of samples decay time is equal to
+    synth.envDecay = std::exp(std::log(SILENCE) / decaySamples); // store result of exp formula to generate the multiplier
+    
     float noiseMix = noiseParam->get() / 100.0f;
     noiseMix *= noiseMix;
     synth.noiseMix = noiseMix * 0.06f;
