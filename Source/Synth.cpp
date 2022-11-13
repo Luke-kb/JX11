@@ -67,15 +67,13 @@ void Synth::noteOn(int note, int velocity)
     env.decayMultiplier = envDecay;
     env.sustainLevel = envSustain;
     env.releaseMultiplier = envRelease;
-    env.level = 1.0f;
-    env.target = env.sustainLevel;
-    env.multiplier = env.decayMultiplier;
+    env.attack();
 }
 
 void Synth::noteOff(int note)
 {
     if (voice.note == note) {
-        voice.note = 0;
+        voice.release();
     }
 }
 
@@ -96,8 +94,8 @@ void Synth::render(float** outputBuffers, int sampleCount)
         // calculate the new sample value by multiplying the noise by the velocity and then dividing
         // it by 127 (the total num of values) and multiplying by 0.5 (eg a 6dB reduction)
         // so that it is not too loud
-        if (voice.note > 0) {
-            output = voice.render(noise) + noise;
+        if (voice.env.isActive()) {
+            output = voice.render(noise);
         }
         
         // write the output value to the respective output buffers
@@ -109,6 +107,10 @@ void Synth::render(float** outputBuffers, int sampleCount)
         if (outputBufferRight != nullptr) {
             outputBufferRight[sample] = output;
         }
+    }
+    
+    if (!voice.env.isActive()) {
+        voice.env.reset();
     }
     
     protectYourEars(outputBufferLeft, sampleCount);
