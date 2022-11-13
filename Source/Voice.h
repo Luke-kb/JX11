@@ -36,6 +36,7 @@ struct Voice
         float output = saw + input;
         
         float envelope = env.nextValue();
-        return output * envelope;
+//        return output * envelope;
+        return envelope;
     }
 };
