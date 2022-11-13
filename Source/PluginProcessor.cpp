@@ -587,12 +587,21 @@ void JX11AudioProcessor::render(juce::AudioBuffer<float> &buffer, int sampleCoun
 
 void JX11AudioProcessor::update()
 {
-    float sampleRate = float(getSampleRate()); // get current sample rate
     
-    float decayTime = envDecayParam->get() / 100.0f * 5.0f; // get value of decay param and convert to float between 0 and 1
-    float decaySamples = sampleRate * decayTime; // calculate num of samples decay time is equal to
-    synth.envDecay = std::exp(std::log(SILENCE) / decaySamples); // store result of exp formula to generate the multiplier
+    float sampleRate = float(getSampleRate());
+    float inverseSampleRate = 1.0f / sampleRate;
     
+    synth.envAttack = std::exp(-inverseSampleRate * std::exp(5.5f - 0.075f * envAttackParam->get()));
+    synth.envDecay = std::exp(-inverseSampleRate * std::exp(5.5f - 0.075f * envDecayParam->get()));
+    synth.envSustain = envSustainParam->get() / 100.0f;
+    
+    float envRelease = envReleaseParam->get();
+    if (envRelease < 1.0f) {
+        synth.envRelease = 0.75f; // extra fast release
+    } else {
+        synth.envRelease = std::exp(-inverseSampleRate * std::exp(5.5f - 0.075f * envRelease));
+    }
+
     float noiseMix = noiseParam->get() / 100.0f;
     noiseMix *= noiseMix;
     synth.noiseMix = noiseMix * 0.06f;

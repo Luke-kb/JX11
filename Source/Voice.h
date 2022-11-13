@@ -24,6 +24,7 @@ struct Voice
     {
         note = 0;
         saw = 0.0f;
+        env.reset();
         osc.reset();
     }
     
