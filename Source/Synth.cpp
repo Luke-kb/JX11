@@ -64,7 +64,7 @@ void Synth::noteOn(int note, int velocity)
 //    voice.osc1.reset();
     
     // activate oscillator 2
-    voice.osc2.period = voice.osc1.period * 0.994f;
+    voice.osc2.period = voice.osc1.period * detune;
     voice.osc2.amplitude = voice.osc1.amplitude * oscMix;
 //    voice.osc2.reset();
     
