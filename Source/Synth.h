@@ -26,9 +26,7 @@ public:
     void reset();
     
     float envAttack, envDecay, envSustain, envRelease;
-    float noiseMix;
-    float oscMix;
-    float detune;
+    float noiseMix, oscMix, detune, tune;
     
 private:
     Voice voice;
