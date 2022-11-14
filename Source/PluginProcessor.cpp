@@ -605,6 +605,7 @@ void JX11AudioProcessor::update()
     float noiseMix = noiseParam->get() / 100.0f;
     noiseMix *= noiseMix;
     synth.noiseMix = noiseMix * 0.06f;
+    synth.oscMix = oscMixParam->get() / 100.0f;
 }
 
 //==============================================================================
