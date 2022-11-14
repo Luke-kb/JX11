@@ -57,17 +57,10 @@ void Synth::noteOn(int note, int velocity)
     voice.note = note;
     
     float freq = 440.f * std::exp2(float(note - 69) / 12.f); // convert midi to freq
-    
-    // activate oscillator 1
-    voice.osc1.period = sampleRate / freq;
+    voice.period = sampleRate / freq;
     voice.osc1.amplitude = (velocity / 127.0f) * 0.5f;
-//    voice.osc1.reset();
-    
-    // activate oscillator 2
-    voice.osc2.period = voice.osc1.period * detune;
     voice.osc2.amplitude = voice.osc1.amplitude * oscMix;
-//    voice.osc2.reset();
-    
+
     Envelope& env = voice.env;
     env.attackMultiplier = envAttack;
     env.decayMultiplier = envDecay;
@@ -87,6 +80,10 @@ void Synth::render(float** outputBuffers, int sampleCount)
 {
     float* outputBufferLeft = outputBuffers[0];
     float* outputBufferRight = outputBuffers[1];
+    
+    voice.osc1.period = voice.period;
+    voice.osc2.period = voice.osc1.period * detune;
+
     
     // loop through samplesin buffer one-by-one
     for (int sample = 0; sample < sampleCount; ++sample) {

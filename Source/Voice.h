@@ -16,7 +16,7 @@
 struct Voice
 {
     int note;
-    float saw;
+    float saw, period;
     
     Envelope env;
     Oscillator osc1;
