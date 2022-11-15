@@ -29,11 +29,12 @@ public:
     float noiseMix, oscMix, detune, tune;
     
 private:
-    Voice voice;
-    NoiseGenerator noiseGen;
-    float sampleRate;
-
     void noteOn(int note, int velocity);
     void noteOff(int note);
     float calculatePeriod(int note) const;
+    
+    Voice voice;
+    NoiseGenerator noiseGen;
+    float sampleRate;
+    float pitchBend;
 };

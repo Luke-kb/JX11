@@ -30,6 +30,7 @@ void Synth::reset()
 {
     voice.reset();
     noiseGen.reset();
+    pitchBend = 1.0f;
 }
 
 void Synth::midiMessage(uint8_t data0, uint8_t data1, uint8_t data2)
@@ -40,7 +41,7 @@ void Synth::midiMessage(uint8_t data0, uint8_t data1, uint8_t data2)
             noteOff(data1 & 0x7F);
             break;
         // note on
-        case 0x90:
+        case 0x90: {
             uint8_t note = data1 & 0x7F;
             uint8_t velo = data2 & 0x7F;
             if (velo > 0) {
@@ -48,6 +49,12 @@ void Synth::midiMessage(uint8_t data0, uint8_t data1, uint8_t data2)
             } else {
                 noteOff(note);
             }
+            break;
+        }
+            
+        // pitch bend
+        case 0xE0:
+            pitchBend = std::exp(-0.000014102f * float(data1 + 128 * data2 - 8192));
             break;
     }
 }
@@ -89,9 +96,8 @@ void Synth::render(float** outputBuffers, int sampleCount)
     float* outputBufferLeft = outputBuffers[0];
     float* outputBufferRight = outputBuffers[1];
     
-    voice.osc1.period = voice.period;
+    voice.osc1.period = voice.period * pitchBend;
     voice.osc2.period = voice.osc1.period * detune;
-
     
     // loop through samplesin buffer one-by-one
     for (int sample = 0; sample < sampleCount; ++sample) {
