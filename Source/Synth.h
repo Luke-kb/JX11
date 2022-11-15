@@ -24,16 +24,16 @@ public:
     void midiMessage(uint8_t data0, uint8_t data1, uint8_t data2);
     void render(float** outputBuffers, int sampleCount);
     void reset();
-    
+        
     float envAttack, envDecay, envSustain, envRelease;
     float noiseMix, oscMix, detune, tune;
     
 private:
     Voice voice;
     NoiseGenerator noiseGen;
-    
+    float sampleRate;
+
     void noteOn(int note, int velocity);
     void noteOff(int note);
-    
-    float sampleRate;
+    float calculatePeriod(int note) const;
 };

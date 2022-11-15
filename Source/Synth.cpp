@@ -55,9 +55,10 @@ void Synth::midiMessage(uint8_t data0, uint8_t data1, uint8_t data2)
 void Synth::noteOn(int note, int velocity)
 {
     voice.note = note;
+
+    float period = calculatePeriod(note);
+    voice.period = period;
     
-    float freq = 440.f * std::exp2((float(note - 69) + tune) / 12.f); // convert midi to freq
-    voice.period = sampleRate / freq;
     voice.osc1.amplitude = (velocity / 127.0f) * 0.5f;
     voice.osc2.amplitude = voice.osc1.amplitude * oscMix;
 
@@ -74,6 +75,13 @@ void Synth::noteOff(int note)
     if (voice.note == note) {
         voice.release();
     }
+}
+
+float Synth::calculatePeriod(int note) const
+{
+    float period = tune * std::exp(-0.05776226505f * float(note));
+    while (period < 6.0f || (period * detune) < 6.0f) { period += period; }
+    return period;
 }
 
 void Synth::render(float** outputBuffers, int sampleCount)
