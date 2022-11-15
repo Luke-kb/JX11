@@ -16,7 +16,9 @@
 struct Voice
 {
     int note;
-    float saw, period;
+    float saw;
+    float period;
+    float panLeft, panRight;
     
     Envelope env;
     Oscillator osc1;
@@ -34,6 +36,15 @@ struct Voice
         env.reset();
         osc1.reset();
         osc2.reset();
+        panLeft = 0.707f;
+        panRight = 0.707f;
+    }
+    
+    void updatePanning()
+    {
+        float panning = std::clamp((note - 60.0f) / 24.0f, -1.0f, 1.0f); // converts midi to panning value
+        panLeft = std::sin(PI_OVER_4 * (1.0f - panning));
+        panRight = std::sin(PI_OVER_4 * (1.0f + panning));
     }
     
     float render(float input)
