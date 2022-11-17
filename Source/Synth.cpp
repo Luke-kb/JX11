@@ -28,7 +28,10 @@ void Synth::deallocateResources()
 
 void Synth::reset()
 {
-    voice.reset();
+    for (int v = 0; v < MAX_VOICES; ++v) {
+        voices[v].reset();
+    }
+    
     noiseGen.reset();
     pitchBend = 1.0f;
 }
@@ -61,12 +64,17 @@ void Synth::midiMessage(uint8_t data0, uint8_t data1, uint8_t data2)
 
 void Synth::noteOn(int note, int velocity)
 {
+    startVoice(0, note, velocity);
+}
+
+void Synth::startVoice(int v, int note, int velocity)
+{
+    float period = calculatePeriod(note);
+    
+    Voice& voice = voices[v];
+    voice.period = period;
     voice.note = note;
     voice.updatePanning();
-
-    float period = calculatePeriod(note);
-    voice.period = period;
-    
     voice.osc1.amplitude = (velocity / 127.0f) * 0.5f;
     voice.osc2.amplitude = voice.osc1.amplitude * oscMix;
 
@@ -80,6 +88,8 @@ void Synth::noteOn(int note, int velocity)
 
 void Synth::noteOff(int note)
 {
+    Voice& voice = voices[0];
+    
     if (voice.note == note) {
         voice.release();
     }
@@ -97,8 +107,14 @@ void Synth::render(float** outputBuffers, int sampleCount)
     float* outputBufferLeft = outputBuffers[0];
     float* outputBufferRight = outputBuffers[1];
     
-    voice.osc1.period = voice.period * pitchBend;
-    voice.osc2.period = voice.osc1.period * detune;
+    // apply pitchbend & detune for currently rendered voices
+    for (int v = 0; v < MAX_VOICES; ++v) {
+        Voice& voice = voices[v];
+        if (voice.env.isActive()) {
+            voice.osc1.period = voice.period * pitchBend;
+            voice.osc2.period = voice.osc1.period * detune;
+        }
+    }
     
     // loop through samplesin buffer one-by-one
     for (int sample = 0; sample < sampleCount; ++sample) {
@@ -109,15 +125,14 @@ void Synth::render(float** outputBuffers, int sampleCount)
         float outputLeft = 0.0f;
         float outputRight = 0.0f;
         
-        // if a noteOn msg has been sent and a noteOff msg has NOT been received for the same key
-        // calculate the new sample value by multiplying the noise by the velocity and then dividing
-        // it by 127 (the total num of values) and multiplying by 0.5 (eg a 6dB reduction)
-        // so that it is not too loud
-        if (voice.env.isActive()) {
-            float output = voice.render(noise);
-            
-            outputLeft += output * voice.panLeft;
-            outputRight += output * voice.panRight;
+        // render any active voices
+        for (int v = 0; v < MAX_VOICES; ++v) {
+            Voice& voice = voices[v];
+            if (voice.env.isActive()) {
+                float output = voice.render(noise);
+                outputLeft += output * voice.panLeft;
+                outputRight += output * voice.panRight;
+            }
         }
         
         // write the output value to the respective output buffers
@@ -130,10 +145,14 @@ void Synth::render(float** outputBuffers, int sampleCount)
             outputBufferLeft[sample] = (outputLeft + outputRight) * 0.5f;
         }
     }
-    
-    if (!voice.env.isActive()) {
-        voice.env.reset();
+    // resets voices that are not active
+    for (int v = 0; v < MAX_VOICES; ++v) {
+        Voice& voice = voices[v];
+        if (!voice.env.isActive()) {
+            voice.env.reset();
+        }
     }
+        
     
     protectYourEars(outputBufferLeft, sampleCount);
     protectYourEars(outputBufferRight, sampleCount);

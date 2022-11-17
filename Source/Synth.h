@@ -24,16 +24,20 @@ public:
     void midiMessage(uint8_t data0, uint8_t data1, uint8_t data2);
     void render(float** outputBuffers, int sampleCount);
     void reset();
+    void startVoice(int v, int note, int velocity);
         
     float envAttack, envDecay, envSustain, envRelease;
     float noiseMix, oscMix, detune, tune;
+    
+    static constexpr int MAX_VOICES = 8;
+    int numVoices;
     
 private:
     void noteOn(int note, int velocity);
     void noteOff(int note);
     float calculatePeriod(int note) const;
     
-    Voice voice;
+    std::array<Voice, MAX_VOICES> voices;
     NoiseGenerator noiseGen;
     float sampleRate;
     float pitchBend;
