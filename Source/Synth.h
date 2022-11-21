@@ -36,6 +36,7 @@ private:
     void noteOn(int note, int velocity);
     void noteOff(int note);
     float calculatePeriod(int note) const;
+    int findFreeVoice() const;
     
     std::array<Voice, MAX_VOICES> voices;
     NoiseGenerator noiseGen;
