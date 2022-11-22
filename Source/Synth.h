@@ -37,9 +37,12 @@ private:
     void noteOff(int note);
     float calculatePeriod(int v, int note) const;
     int findFreeVoice() const;
+    void controlChange(uint8_t data1, uint8_t data2);
     
     std::array<Voice, MAX_VOICES> voices;
     NoiseGenerator noiseGen;
+    
     float sampleRate;
     float pitchBend;
+    bool sustainPedalPressed = false;
 };
