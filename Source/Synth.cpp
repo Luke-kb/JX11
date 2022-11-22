@@ -137,6 +137,15 @@ void Synth::controlChange(uint8_t data1, uint8_t data2)
                 noteOff(SUSTAIN);
             }
             break;
+        // set all notes off (panic)
+        default:
+            if (data1 >= 0x78) {
+                for (int v = 0; v < MAX_VOICES; ++v) {
+                    voices[v].reset();
+                }
+                sustainPedalPressed = false;
+            }
+            break;
     }
 }
 
