@@ -71,9 +71,14 @@ void Synth::midiMessage(uint8_t data0, uint8_t data1, uint8_t data2)
 
 void Synth::noteOn(int note, int velocity)
 {
-    int v = 0; // voice index (0 = mono voice)
+    int v = 0;  // voice index (0 = mono voice)
     
-    if (numVoices > 1) {
+    if (numVoices == 1) {   // i.e. monophonic
+        if (voices[0].note > 0) {   // i.e. legato playing
+            restartMonoVoice(note, velocity);
+            return;
+        }
+    } else {    // i.e polyphonic
         v = findFreeVoice();
     }
     
@@ -125,6 +130,18 @@ int Synth::findFreeVoice() const
         }
     }
     return v;
+}
+
+void Synth::restartMonoVoice(int note, int velocity)
+{
+    float period = calculatePeriod(0, note);
+    
+    Voice& voice = voices[0];
+    voice.period = period;
+
+    voice.env.level += SILENCE + SILENCE;
+    voice.note = note;
+    voice.updatePanning();
 }
 
 void Synth::controlChange(uint8_t data1, uint8_t data2)

@@ -41,6 +41,7 @@ private:
     float calculatePeriod(int v, int note) const;
     int findFreeVoice() const;
     void controlChange(uint8_t data1, uint8_t data2);
+    void restartMonoVoice(int note, int velocity);
     
     std::array<Voice, MAX_VOICES> voices;
     NoiseGenerator noiseGen;
