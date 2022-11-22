@@ -1,3 +1,3 @@
 # JX11
 
-Synthesiser plugin based on [book](https://github.com/hollance/synth-plugin-book) by [@hollance](https://github.com/hollance)
+Synthesiser plugin based on this [book](https://leanpub.com/synth-plugin) by [@hollance](https://github.com/hollance)
