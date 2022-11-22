@@ -28,7 +28,7 @@ public:
         
     float envAttack, envDecay, envSustain, envRelease;
     float noiseMix, oscMix, detune, tune;
-    float volumeTrim;
+    float volumeTrim, outputLevel;
     
     static constexpr int MAX_VOICES = 8;
     int numVoices;

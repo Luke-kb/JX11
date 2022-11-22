@@ -189,6 +189,9 @@ void Synth::render(float** outputBuffers, int sampleCount)
             }
         }
         
+        outputLeft *= outputLevel;
+        outputRight *= outputLevel;
+        
         // write the output value to the respective output buffers
         // if plugin is running in mono, OutputBufferRight will nullptr
         // and we only write to outputBufferLeft

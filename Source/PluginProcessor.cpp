@@ -617,6 +617,7 @@ void JX11AudioProcessor::update()
     synth.detune = std::pow(1.059463094359f, -semi - 0.01f * cent);
     synth.tune = sampleRate * std::exp(0.05776226505f * tuneInSemi);
     synth.numVoices = (polyModeParam->getIndex() ==  0) ? 1 : Synth::MAX_VOICES;
+    synth.outputLevel = juce::Decibels::decibelsToGain(outputLevelParam->get());
 }
 
 //==============================================================================
