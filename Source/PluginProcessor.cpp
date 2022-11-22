@@ -572,6 +572,8 @@ void JX11AudioProcessor::handleMIDI(uint8_t data0, uint8_t data1, uint8_t data2)
 void JX11AudioProcessor::reset()
 {
     synth.reset();
+    synth.outputLevelSmoother.setCurrentAndTargetValue(
+            juce::Decibels::decibelsToGain(outputLevelParam->get()));
 }
 
 void JX11AudioProcessor::render(juce::AudioBuffer<float> &buffer, int sampleCount, int bufferOffset)
@@ -617,7 +619,8 @@ void JX11AudioProcessor::update()
     synth.detune = std::pow(1.059463094359f, -semi - 0.01f * cent);
     synth.tune = sampleRate * std::exp(0.05776226505f * tuneInSemi);
     synth.numVoices = (polyModeParam->getIndex() ==  0) ? 1 : Synth::MAX_VOICES;
-    synth.outputLevel = juce::Decibels::decibelsToGain(outputLevelParam->get());
+    synth.outputLevelSmoother.setTargetValue(
+             juce::Decibels::decibelsToGain(outputLevelParam->get()));
 }
 
 //==============================================================================

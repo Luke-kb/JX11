@@ -37,6 +37,7 @@ void Synth::reset()
     
     noiseGen.reset();
     pitchBend = 1.0f;
+    outputLevelSmoother.reset(sampleRate, 0.05);
 }
 
 void Synth::midiMessage(uint8_t data0, uint8_t data1, uint8_t data2)
@@ -189,6 +190,7 @@ void Synth::render(float** outputBuffers, int sampleCount)
             }
         }
         
+        float outputLevel = outputLevelSmoother.getNextValue();
         outputLeft *= outputLevel;
         outputRight *= outputLevel;
         

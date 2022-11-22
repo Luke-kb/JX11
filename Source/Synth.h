@@ -28,7 +28,9 @@ public:
         
     float envAttack, envDecay, envSustain, envRelease;
     float noiseMix, oscMix, detune, tune;
-    float volumeTrim, outputLevel;
+    float volumeTrim;
+    
+    juce::LinearSmoothedValue<float> outputLevelSmoother;
     
     static constexpr int MAX_VOICES = 8;
     int numVoices;
