@@ -75,6 +75,7 @@ void Synth::noteOn(int note, int velocity)
     
     if (numVoices == 1) {   // i.e. monophonic
         if (voices[0].note > 0) {   // i.e. legato playing
+            shiftQueuedNotes();
             restartMonoVoice(note, velocity);
             return;
         }
@@ -83,6 +84,27 @@ void Synth::noteOn(int note, int velocity)
     }
     
     startVoice(v, note, velocity);
+}
+
+void Synth::noteOff(int note)
+{
+    if ((numVoices == 1) && (voices[0].note == note)) {
+        int queuedNote = nextQueuedNote();
+        if (queuedNote > 0) {
+            restartMonoVoice(queuedNote, -1);
+        }
+    }
+    
+    for (int v = 0; v < MAX_VOICES; v++) {
+        if (voices[v].note == note) {
+            if (sustainPedalPressed) {
+                voices[v].note = SUSTAIN;
+            } else {
+                voices[v].release();
+                voices[v].note = 0;
+            }
+        }
+    }
 }
 
 void Synth::startVoice(int v, int note, int velocity)
@@ -102,20 +124,6 @@ void Synth::startVoice(int v, int note, int velocity)
     env.sustainLevel = envSustain;
     env.releaseMultiplier = envRelease;
     env.attack();
-}
-
-void Synth::noteOff(int note)
-{
-    for (int v = 0; v < MAX_VOICES; v++) {
-        if (voices[v].note == note) {
-            if (sustainPedalPressed) {
-                voices[v].note = SUSTAIN;
-            } else {
-                voices[v].release();
-                voices[v].note = 0;
-            }
-        }
-    }
 }
 
 int Synth::findFreeVoice() const
@@ -142,6 +150,29 @@ void Synth::restartMonoVoice(int note, int velocity)
     voice.env.level += SILENCE + SILENCE;
     voice.note = note;
     voice.updatePanning();
+}
+
+int Synth::nextQueuedNote()
+{
+    int held = 0;
+    for (int v = MAX_VOICES - 1; v > 0; v--) {
+        if (voices[v].note > 0) { held = v; }
+    }
+    
+    if (held > 0) {
+        int note = voices[held].note;
+        voices[held].note = 0;
+        return note;
+    }
+    return 0;
+}
+
+void Synth::shiftQueuedNotes()
+{
+    for (int tmp = MAX_VOICES - 1; tmp > 0; tmp--) {
+        voices[tmp].note = voices[tmp - 1].note;
+        voices[tmp].release();
+    }
 }
 
 void Synth::controlChange(uint8_t data1, uint8_t data2)

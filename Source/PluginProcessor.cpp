@@ -508,10 +508,15 @@ void JX11AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
         buffer.clear (i, 0, buffer.getNumSamples());
     }
     
-    bool expected = true;
-    if (parametersChanged.compare_exchange_strong(expected, false)) {
-        update();
-    }
+    //    bool expected = true;
+    //    if (parametersChanged.compare_exchange_strong(expected, false)) {
+    //        update();
+    //    }
+    // the above code relies on a timer used by the APTVS listener that
+    // is too slow for offline rendering of automation
+    // the recommended solution is to call update() for every block
+    update();
+    
         
     splitBufferByEvents(buffer, midiMessages);
     
