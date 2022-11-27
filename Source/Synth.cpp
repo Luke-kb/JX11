@@ -71,8 +71,9 @@ void Synth::midiMessage(uint8_t data0, uint8_t data1, uint8_t data2)
 
 void Synth::noteOn(int note, int velocity)
 {
-    int v = 0;  // voice index (0 = mono voice)
+    if (ignoreVelocity) { velocity = 80; }
     
+    int v = 0;  // voice index (0 = mono voice)
     if (numVoices == 1) {   // i.e. monophonic
         if (voices[0].note > 0) {   // i.e. legato playing
             shiftQueuedNotes();
@@ -115,7 +116,9 @@ void Synth::startVoice(int v, int note, int velocity)
     voice.period = period;
     voice.note = note;
     voice.updatePanning();
-    voice.osc1.amplitude = volumeTrim * velocity;
+    
+    float vel = 0.004f * float((velocity + 64) * (velocity + 64)) - 8.0f;
+    voice.osc1.amplitude = volumeTrim * vel;
     voice.osc2.amplitude = voice.osc1.amplitude * oscMix;
 
     Envelope& env = voice.env;

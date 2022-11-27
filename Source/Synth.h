@@ -35,6 +35,9 @@ public:
     static constexpr int MAX_VOICES = 8;
     int numVoices;
     
+    float velocitySensitivity;
+    bool ignoreVelocity;
+    
 private:
     void noteOn(int note, int velocity);
     void noteOff(int note);
