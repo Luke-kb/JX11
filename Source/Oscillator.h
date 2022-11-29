@@ -23,6 +23,25 @@ public:
     float amplitude = 1.0f;
     float modulation = 1.0f;
     
+    void squareWave(Oscillator& other, float newPeriod)
+    {
+        reset();
+        
+        if (other.inc > 0.0f) {
+            phase = other.phaseMax + other.phaseMax - other.phase;
+            inc = -other.inc;
+        } else if (other.inc < 0.0f) {
+            phase = other.phase;
+            inc = other.inc;
+        } else {
+            phase = -PI;
+            inc = PI;
+        }
+        
+        phase += PI * newPeriod / 2.0f;
+        phaseMax = phase;
+    }
+    
     void reset()
     {
         dc = 0.0f;

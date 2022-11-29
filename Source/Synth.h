@@ -30,6 +30,7 @@ public:
     float noiseMix, oscMix, detune, tune;
     float volumeTrim;
     float vibrato;
+    float pwmDepth;
     
     juce::LinearSmoothedValue<float> outputLevelSmoother;
     
@@ -52,13 +53,13 @@ private:
     void shiftQueuedNotes();
     int nextQueuedNote();
     void updateLFO();
+    
     int lfoStep;
     float lfo;
-    
-    std::array<Voice, MAX_VOICES> voices;
-    NoiseGenerator noiseGen;
-    
     float sampleRate;
     float pitchBend;
     bool sustainPedalPressed = false;
+    
+    std::array<Voice, MAX_VOICES> voices;
+    NoiseGenerator noiseGen;
 };

@@ -52,7 +52,7 @@ struct Voice
         float sample1 = osc1.nextSample();
         float sample2 = osc2.nextSample();
         saw = (saw * 0.997f) + sample1 - sample2; // 'leaky integrator'
-    
+        // saw = sample1 - sample2; // calculate saw this way to view only the sinc pulses
         float output = saw + input;
         float envelope = env.nextValue();
         
