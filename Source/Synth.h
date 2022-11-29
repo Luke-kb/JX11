@@ -29,6 +29,7 @@ public:
     float envAttack, envDecay, envSustain, envRelease;
     float noiseMix, oscMix, detune, tune;
     float volumeTrim;
+    float vibrato;
     
     juce::LinearSmoothedValue<float> outputLevelSmoother;
     

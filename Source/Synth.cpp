@@ -220,7 +220,7 @@ void::Synth::updateLFO()
         
         const float sine = std::sin(lfo);
         
-        float vibratoMod = 1.0f + sine * 0.2f;
+        float vibratoMod = 1.0f + sine * vibrato;
         
         for (int v = 0; v < MAX_VOICES; ++v) {
             Voice& voice = voices[v];
