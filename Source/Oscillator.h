@@ -21,6 +21,7 @@ class Oscillator
 public:
     float period = 0.0f;
     float amplitude = 1.0f;
+    float modulation = 1.0f;
     
     void reset()
     {
@@ -40,7 +41,7 @@ public:
         
         if (phase <= PI_OVER_4) {
             
-            float halfPeriod = period / 2.0f; // midpoint between current peak and the next one
+            float halfPeriod = (period / 2.0f) * modulation; // midpoint between current peak and the next one
             
             phaseMax = std::floor(0.5f + halfPeriod) - 0.5f;
             dc = 0.5f * amplitude / phaseMax; // calcuate the dc offset

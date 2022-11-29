@@ -635,6 +635,11 @@ void JX11AudioProcessor::update()
         synth.velocitySensitivity = 0.0005f * filterVelocity;
         synth.ignoreVelocity = false;
     }
+    
+    const float inverseUpdateRate = inverseSampleRate * synth.LFO_MAX;
+    
+    float lfoRate = std::exp(7.0f * lfoRateParam->get() - 4.0f);
+    synth.lfoIncrement = lfoRate * inverseUpdateRate * float(TWO_PI);
 }
 
 //==============================================================================

@@ -38,6 +38,9 @@ public:
     float velocitySensitivity;
     bool ignoreVelocity;
     
+    const int LFO_MAX = 32; // how often the LFO is updated (in samples)
+    float lfoIncrement;
+    
 private:
     void noteOn(int note, int velocity);
     void noteOff(int note);
@@ -47,7 +50,9 @@ private:
     void restartMonoVoice(int note, int velocity);
     void shiftQueuedNotes();
     int nextQueuedNote();
-
+    void updateLFO();
+    int lfoStep;
+    float lfo;
     
     std::array<Voice, MAX_VOICES> voices;
     NoiseGenerator noiseGen;

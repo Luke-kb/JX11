@@ -35,6 +35,8 @@ void Synth::reset()
         voices[v].reset();
     }
     
+    lfo = 0.0f;
+    lfoStep = 0;
     noiseGen.reset();
     pitchBend = 1.0f;
     outputLevelSmoother.reset(sampleRate, 0.05);
@@ -208,6 +210,28 @@ float Synth::calculatePeriod(int v, int note) const
     return period;
 }
 
+void::Synth::updateLFO()
+{
+    if (--lfoStep <= 0) {
+        lfoStep = LFO_MAX;
+    
+        lfo += lfoIncrement;
+        if (lfo > PI) { lfo -= TWO_PI; }
+        
+        const float sine = std::sin(lfo);
+        
+        float vibratoMod = 1.0f + sine * 0.2f;
+        
+        for (int v = 0; v < MAX_VOICES; ++v) {
+            Voice& voice = voices[v];
+            if (voice.env.isActive()) {
+                voice.osc1.modulation = vibratoMod;
+                voice.osc2.modulation = vibratoMod;
+            }
+        }
+    }
+}
+
 void Synth::render(float** outputBuffers, int sampleCount)
 {
     float* outputBufferLeft = outputBuffers[0];
@@ -224,9 +248,9 @@ void Synth::render(float** outputBuffers, int sampleCount)
     
     // loop through samplesin buffer one-by-one
     for (int sample = 0; sample < sampleCount; ++sample) {
+        updateLFO();
         // grab output from noise generator
         float noise = noiseGen.nextValue() * noiseMix;
-        
         // set outputs to 0
         float outputLeft = 0.0f;
         float outputRight = 0.0f;
