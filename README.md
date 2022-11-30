@@ -1,3 +1,3 @@
-# JX11
+# 'JX11' Synthesiser 
 
-Synthesiser plugin based on this [book](https://leanpub.com/synth-plugin) by [@hollance](https://github.com/hollance)
+VST/AU Polyphonic Synthesiser based on [this book](https://leanpub.com/synth-plugin) by [@hollance](https://github.com/hollance)
