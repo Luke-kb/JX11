@@ -29,8 +29,9 @@ public:
     float envAttack, envDecay, envSustain, envRelease;
     float noiseMix, oscMix, detune, tune;
     float volumeTrim;
-    float vibrato;
-    float pwmDepth;
+    float vibrato, pwmDepth;
+    int glideMode;
+    float glideRate, glideBend;
     
     juce::LinearSmoothedValue<float> outputLevelSmoother;
     
@@ -54,12 +55,22 @@ private:
     int nextQueuedNote();
     void updateLFO();
     
+    
     int lfoStep;
     float lfo;
     float sampleRate;
     float pitchBend;
     bool sustainPedalPressed = false;
     float modWheel;
+    int lastNote;
+  
+    inline void updatePeriod(Voice& voice)
+    {
+        voice.osc1.period = voice.period * pitchBend;
+        voice.osc2.period = voice.osc1.period * detune;
+    }
+  
+    bool isPlayingLegatoStyle() const;
     
     std::array<Voice, MAX_VOICES> voices;
     NoiseGenerator noiseGen;
