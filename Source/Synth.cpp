@@ -38,6 +38,7 @@ void Synth::reset()
     lfo = 0.0f;
     lfoStep = 0;
     noiseGen.reset();
+    modWheel = 0.0f;
     pitchBend = 1.0f;
     outputLevelSmoother.reset(sampleRate, 0.05);
 }
@@ -195,6 +196,9 @@ void Synth::controlChange(uint8_t data1, uint8_t data2)
                 noteOff(SUSTAIN);
             }
             break;
+        case 0x01:
+            modWheel = 0.000005f * float(data2 * data2);
+            break;
         // set all notes off (panic)
         default:
             if (data1 >= 0x78) {
@@ -224,8 +228,8 @@ void::Synth::updateLFO()
         
         const float sine = std::sin(lfo);
         
-        float vibratoMod = 1.0f + sine * vibrato;
-        float pwm = 1.0f + sine * pwmDepth;
+        float vibratoMod = 1.0f + sine * (modWheel + vibrato);
+        float pwm = 1.0f + sine * (modWheel + pwmDepth);
         
         for (int v = 0; v < MAX_VOICES; ++v) {
             Voice& voice = voices[v];

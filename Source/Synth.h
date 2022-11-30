@@ -59,6 +59,7 @@ private:
     float sampleRate;
     float pitchBend;
     bool sustainPedalPressed = false;
+    float modWheel;
     
     std::array<Voice, MAX_VOICES> voices;
     NoiseGenerator noiseGen;
