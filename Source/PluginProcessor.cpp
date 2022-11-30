@@ -564,6 +564,16 @@ void JX11AudioProcessor::splitBufferByEvents(juce::AudioBuffer<float>& buffer, j
 
 void JX11AudioProcessor::handleMIDI(uint8_t data0, uint8_t data1, uint8_t data2)
 {
+  // Control Change
+  if ((data0 & 0xF0) == 0xB0) {
+    if (data1 == 0x07) {  // volume control
+      float volumeCtrl = float(data2) / 127.0f;
+      outputLevelParam->beginChangeGesture();
+      outputLevelParam->setValueNotifyingHost(volumeCtrl);
+      outputLevelParam->endChangeGesture();
+    }
+  }
+  
   // Program Change
   if ((data0 & 0xF0) == 0xC0) {
     if (data1 < presets.size()) {
@@ -690,7 +700,7 @@ void JX11AudioProcessor::setStateInformation (const void* data, int sizeInBytes)
   if (xml.get() != nullptr && xml->hasTagName(apvts.state.getType())) {
     apvts.replaceState(juce::ValueTree::fromXml(*xml));
     parametersChanged.store(true);
-    //        DBG(apvts.copyState().toXmlString()); // output xml to console
+    //  DBG(apvts.copyState().toXmlString()); // output xml to console
   }
 }
 
