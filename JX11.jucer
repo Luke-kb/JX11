@@ -6,6 +6,8 @@
               displaySplashScreen="0">
   <MAINGROUP id="d5JoXB" name="JX11">
     <GROUP id="{FB9ED3F5-0721-60C7-D90A-8CCC6C099C2F}" name="Source">
+      <FILE id="w5sd7s" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
+      <FILE id="bMnpLA" name="LookAndFeel.h" compile="0" resource="0" file="Source/LookAndFeel.h"/>
       <FILE id="L2pmQ1" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="JlKIhY" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>

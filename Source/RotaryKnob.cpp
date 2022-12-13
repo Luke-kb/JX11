@@ -21,8 +21,14 @@ RotaryKnob::RotaryKnob()
   // initialise any special settings that your component needs.
   
   slider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+
   slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, textBoxHeight);
+
   addAndMakeVisible(slider);
+
+//  slider.setRotaryParameters(juce::degreesToRadians(225.0f),
+//                             juce::degreesToRadians(495.0f), true);
+
       
   setBounds(0, 0, 100, 120);
 }
@@ -43,10 +49,10 @@ void RotaryKnob::paint (juce::Graphics& g)
              juce::Justification::centred);
   
   // debugging colours
-  g.setColour(juce::Colours::yellow);
-  g.drawRect(0, labelHeight, bounds.getWidth(), bounds.getHeight() - labelHeight - textBoxHeight, 1);
-  g.setColour(juce::Colours::green);
-  g.drawRect(0, 0, bounds.getWidth(), labelHeight, 1);
+//  g.setColour(juce::Colours::yellow);
+//  g.drawRect(0, labelHeight, bounds.getWidth(), bounds.getHeight() - labelHeight - textBoxHeight, 1);
+//  g.setColour(juce::Colours::green);
+//  g.drawRect(0, 0, bounds.getWidth(), labelHeight, 1);
 }
 
 void RotaryKnob::resized()

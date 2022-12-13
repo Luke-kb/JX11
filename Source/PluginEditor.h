@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "RotaryKnob.h"
+#include "LookAndFeel.h"
 
 //==============================================================================
 /**
@@ -45,6 +46,8 @@ private:
   juce::TextButton polyModeButton;
   ButtonAttachment polyModeAttachment { audioProcessor.apvts,
                   ParameterID::polyMode.getParamID(), polyModeButton };
+  
+  LookAndFeel globalLNF;
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JX11AudioProcessorEditor)
 };

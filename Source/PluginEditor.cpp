@@ -23,6 +23,8 @@ JX11AudioProcessorEditor::JX11AudioProcessorEditor (JX11AudioProcessor& p)
   polyModeButton.setClickingTogglesState(true);
   addAndMakeVisible(polyModeButton);
 
+  juce::LookAndFeel::setDefaultLookAndFeel(&globalLNF);
+  
   setSize (600, 400);
 }
 
